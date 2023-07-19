@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+</head>
+<body>
+    
+
+<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+
+
+  $(document).ready(function() {
+  namespace = '/data';
+  var socket = io(namespace);
+
+
+      function x() {
+        const acl = new Accelerometer({ frequency: 60 });
+        acl.addEventListener("reading", () => {
+          console.log(`Acceleration along the X-axis ${acl.x}`);
+          console.log(`Acceleration along the Y-axis ${acl.y}`);
+          console.log(`Acceleration along the Z-axis ${acl.z}`);
+
+          socket.emit('pass_data', {data: [acl.x,acl.y,acl.z]});
+
+        });
+        
+        acl.start();
+      }
+
+
+      function a() {
+        socket.emit('pass_data', {data: [1,2,3]});
+      }
+        
+});
+
+
+
+</script>
+
+
+<button onclick="a">appui ici</button>
+</body>
+</html>
+
+

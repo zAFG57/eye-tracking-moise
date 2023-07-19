@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>accelerateur ws</title>
+  </head>
+  <body>
+    <h1>cette page permet d'envoyé au pc les valeurs des capteurs de ton téléphone</h1>
+    
+    <br>rotation X: <span id="x"></span>
+    <br>rotation Y: <span id="y"></span>
+    <br>rotation Z: <span id="z"></span>
+    <br>
+    <br>acceleration X: <span id="xac"></span>
+    <br>acceleration Y: <span id="yac"></span>
+    <br>acceleration Z: <span id="zac"></span>
+
+
+
+
+
+    <script>
+
+if (window.DeviceMotionEvent == undefined)
+{
+    alert("no accelerometer");
+}
+
+      const print = (x,y,z,rx,ry,rz) => {
+        document.getElementById('x').innerHTML = `${rx}`;
+        document.getElementById('y').innerHTML = `${ry}`;
+        document.getElementById('z').innerHTML = `${rz}`;
+        document.getElementById('xac').innerHTML = `${x}`;
+        document.getElementById('yac').innerHTML = `${y}`;
+        document.getElementById('zac').innerHTML = `${z}`;
+      };
+
+      const ws = new WebSocket('ws://' + location.host + '/data');
+      var last_t = Date.now()
+
+      function a(a)
+      {
+        return a;
+        return Math.round(a*1000)/1000;
+      }
+
+      function get_data(event) {
+        print(event.acceleration.x,event.acceleration.y,event.acceleration.z,event.rotationRate.alpha,event.rotationRate.beta,event.rotationRate.gamma);
+        new_t = Date.now();
+        ws.send([a(event.acceleration.x),a(event.acceleration.y),a(event.acceleration.z),a(event.rotationRate.alpha),a(event.rotationRate.beta),a(event.rotationRate.gamma),(new_t-last_t)/1000]);
+        last_t = new_t;
+      }
+
+      window.addEventListener("devicemotion", get_data);
+      
+    </script>
+
+
+
+  </body>
+</html>
